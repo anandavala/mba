@@ -10,8 +10,11 @@ source("./src/mb-utils.r")
 
 MB <- loadMB()
 
-# Data table 1
+# MB types sorted by prevalence
 (MB.sorted <- MB[order(MB$AP), ])
+
+# Plot of the sorted spectrum of normalised prevalence values for all Myers-Briggs types.
+sortedPlot(MB, "APN")
 
 # Cluster Diagram
 gDist <- daisy(MB[,c("OD","SD","SI","OI","APN")], metric = "gower")
@@ -19,62 +22,88 @@ hc <- hclust(gDist)
 ggdendrogram(hc)
 # extra information in the diagram was added manually in a graphics editor
 
-# Data table 2
+# evolutionary path “E”,”F”,”J”,”N”
 MBS <- getScenarios(MB)
 getPath(MBS, c("E","F","J","N"))
 
-# Data table 3
+# Plot of the sorted spectrum of normalised group prevalence values for all adaptation scenarios.
+MBS.norm <- normColumns(MBS, 7:14)
+sortedPlot(MBS.norm, "GroupAP")
+
+# Plot of the sorted spectrum of normalised choice difference values for all adaptation scenarios.
+sortedPlot(MBS.norm, "Diff")
+
+# Plot of the sorted spectrum of normalised demographic pressure values for all adaptation scenarios.
+sortedPlot(MBS.norm, "DP")
+
+# Plot of the sorted spectrum of normalised TP values for all adaptation scenarios.
+sortedPlot(MBS.norm, "TP")
+
+# What are the most discouraged and encouraged adaptations, with the highest absolute choice difference?
 head(MBS[order(-abs(MBS$Diff)), ])
 
-# Data table 4
+# What are the adaptations with the least choice difference?
 head(MBS[order(abs(MBS$Diff)), ])
 
-# Data table 5
+# What are the adaptations with the most targeted pressure?
 head(MBS[order(-abs(MBS$TP)), ])
 
-# Data table 6
+# What are the adaptations with the least targeted pressure?
 head(MBS[order(abs(MBS$TP)), ])
 
-# Data table 7
+# Plot of the sorted spectrum of normalised total group prevalence values for all 4 step evolutionary paths.
 allPaths <- getAllPaths(MBS)
+allPaths.norm <- normColumns(allPaths, 5:9)
+sortedPlot(allPaths.norm, "TGroupAP", lsize = 4)
+
+# Plot of the sorted spectrum of normalised total choice difference values for all 4 step evolutionary paths.
+sortedPlot(allPaths.norm, "TChDiff", lsize = 4)
+
+# Plot of the sorted spectrum of normalised demographic pressure values for all 4 step evolutionary paths.
+sortedPlot(allPaths.norm, "TChDP", lsize = 4)
+
+# Plot of the sorted spectrum of normalised total targeted pressure values for all 4 step evolutionary paths.
+sortedPlot(allPaths.norm, "TChTP", lsize = 4)
+
+# The most discouraged paths (in terms of choice difference)
 head(allPaths[order(allPaths$TChDiff), ], n = 16)
 
-# Data table 8
+# The most discouraged paths (in terms of targeted pressure)
 head(allPaths[order(allPaths$TChTP), ], n = 16)
 
-# Data table 9
+# The most encouraged paths (in terms of choice difference)
 head(allPaths[order(-allPaths$TChDiff), ], n = 16)
 
-# Data table 10
+# The most encouraged paths (in terms of targeted pressure)
 head(allPaths[order(-allPaths$TChTP), ], n = 16)
 
-# Data table 11
+# The least pressure paths (in terms of choice difference)
 head(allPaths[order(abs(allPaths$TChDiff)), ], n = 16)
 
-# Data table 12
+# The least pressure paths (in terms of targeted pressure)
 head(allPaths[order(abs(allPaths$TChTP)), ], n = 16)
 
-# Data table 13
+# Discouraged: Logistician ISTJ becomes a Protagonist ENFJ via 12 adaptation steps
 (path <-getPath(MBS, c("N","P","E","F","T","I","S","P","F","E","N","J"), chosen = c("I","S","T","J")))
 
-# Data table 14
+# Encouraged: Advocate INFJ becomes an Executive ESTJ via 12 adaptation steps
 (path <-getPath(MBS, c("E","S","T","I","F","N","T","P","S","E","S","J"), chosen = c("I","N","F","J")))
 
-# Data table 15
+# The most discouraged: Advocate INFJ remains an Advocate throughout 12 adaptation steps
 (path <-getPath(MBS, c("I","N","F","J","I","N","F","J","I","N","F","J"), chosen = c("I","N","F","J")))
 
-# Data table 16
+# The most encouraged: Defender ISFJ remains a Defender throughout 12 adaptation steps
 (path <-getPath(MBS, c("I","S","F","J","I","S","F","J","I","S","F","J"), chosen = c("I","S","F","J")))
 
-# Data table 17
+# Cycling within the _N_J group
 getPath(MBS, c("I","N","T","J","E","N","T","J","E","N","F","J"), chosen = c("I","N","F","J"))
 
-# Data table 18
+# Cycling within the __TP group
 getPath(MBS, c("I","N","T","P","I","S","T","P","E","S","T","P"), chosen = c("E","N","T","P"))
 
-# Data table 19
+# Cycling within the __FP group
 getPath(MBS, c("I","N","F","P","I","S","F","P","E","S","F","P"), chosen = c("E","N","F","P"))
 
-# Data table 20
+# Cycling within the _S_J group
 getPath(MBS, c("I","S","T","J","E","S","T","J","E","S","F","J"), chosen = c("I","S","F","J"))
 

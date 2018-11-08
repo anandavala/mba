@@ -426,3 +426,32 @@ getAllPaths <- function(mbs) {
   return(cbind(out, TGroupAP, TChDiff, TChDP, TChTP, RowMean))
 }
 
+# normalise the columns of a data frame
+normColumns <- function(df, cinds) {
+  for (c in cinds) {
+    v <- df[, c]
+    if (min(v) < 0) { # v has negative values
+      av <- abs(v)
+      nv <- sign(v) * (av - min(av)) / (max(av) - min(av))
+    }
+    else { # v has all positive values
+      nv <- (v - min(v)) / (max(v) - min(v))
+    }
+    df[, c] <- nv
+  }
+  return(df)
+}
+
+
+# plot a sorted data frame
+# first sort the values, then plot them to see how they vary over the spectrum
+sortedPlot <- function(mb, cname, lsize = NULL) {
+  mb <- mb[order(eval(parse(text = paste("mb$", cname, sep = "")))), ]
+  rank <- 1:nrow(mb)
+  ggplot(mb, aes(x = rank, y = eval(parse(text = cname)))) +
+    geom_point() +
+    scale_x_continuous(breaks = rank, labels = rownames(mb)) +
+    theme(axis.text.x = element_text(face="bold", angle=90, size = lsize)) +
+    ylab(cname)
+}
+
