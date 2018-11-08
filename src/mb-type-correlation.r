@@ -2,7 +2,7 @@
 
 #### Initialise ####
 rm(list=ls())
-setwd("~/Documents/Projects/16PersonalityTypes/all/analysis/") # edit to suit your environment
+setwd("~/Documents/Projects/16PersonalityTypes/all/mba/") # edit to suit your environment
 source("./src/mb-utils.r")
 
 #### Do Analysis ####
