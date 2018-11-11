@@ -23,21 +23,12 @@ getRowMeans <- function(mb, rnames = rownames(mb)) {
 
 
 #### load MB data ###
-loadMB <- function(paramsAsFactors = TRUE, paramsAsBinary = FALSE) {
-  if (paramsAsBinary || !paramsAsFactors) out <- read.csv(file = "./data/myers-briggs-dataset-binary.csv", head = TRUE, sep = ",", stringsAsFactors = FALSE)
-  else out <- read.csv(file = "./data/myers-briggs-dataset-01.csv", head = TRUE, sep = ",", stringsAsFactors = FALSE)
-  if (paramsAsFactors) {
-    out$OD <- as.factor(out$OD)
-    out$SD <- as.factor(out$SD)
-    out$SI <- factor(out$SI, labels = c("F", "T"))
-    out$OI <- as.factor(out$OI)
-  }
-  else {
-    out$OD <- as.double(out$OD - 0.5)
-    out$SD <- as.double(out$SD - 0.5)
-    out$SI <- as.double(out$SI - 0.5)
-    out$OI <- as.double(out$OI - 0.5)
-  }
+loadMB <- function() {
+  out <- read.csv(file = "./data/myers-briggs-dataset-01.csv", head = TRUE, sep = ",", stringsAsFactors = FALSE)
+  out$OD <- as.factor(out$OD)
+  out$SD <- as.factor(out$SD)
+  out$SI <- factor(out$SI, labels = c("F", "T"))
+  out$OI <- as.factor(out$OI)
   # compute average percentages
   out$LP <- as.double(out$LP)
   out$UP <- as.double(out$UP)
@@ -51,16 +42,23 @@ loadMB <- function(paramsAsFactors = TRUE, paramsAsBinary = FALSE) {
     mutate(APN = (AP - min(AP)) / (max(AP - min(AP)))) %>%
     mutate(Num = rownames(out)) %>%
     select(Num, 1:7, AP, APN)
-  # compute RowMean for all rows
-  if (paramsAsFactors) {
-    out.numeric <- select(loadMB(paramsAsFactors = FALSE), OD, SD, SI, OI, APN)
-  }
-  else {
-    out.numeric <- select(out, OD, SD, SI, OI, APN)
-  }
-  rowMeans <- getRowMeans(out.numeric, out$Type)
-  out <- mutate(out, RowMean = rowMeans$RowMean)
+  # # compute RowMean for all rows
+  # if (paramsAsFactors) {
+  #   out.numeric <- select(loadMB(paramsAsFactors = FALSE), OD, SD, SI, OI, APN)
+  # }
+  # else {
+  #   out.numeric <- select(out, OD, SD, SI, OI, APN)
+  # }
+  # rowMeans <- getRowMeans(out.numeric, out$Type)
+  # out <- mutate(out, RowMean = rowMeans$RowMean)
   rownames(out) <- out$Type
+  # Add group id column
+  out$Grp <- rep(NA, nrow(out))
+  out[out$SD == "N" & out$OI == "J", ]$Grp <- 1
+  out[out$SI == "T" & out$OI == "P", ]$Grp <- 2
+  out[out$SI == "F" & out$OI == "P", ]$Grp <- 3
+  out[out$SD == "S" & out$OI == "J", ]$Grp <- 4
+  out$Grp <- as.factor(out$Grp)
   return(out)
 }
 
@@ -249,9 +247,19 @@ getScenarios <- function(mb, masks = getMasks()) {
                    TP = diffs / groupAPs )
   df$Mask <- as.character(df$Mask)
   df$N_ <- as.integer(df$N_)
-  # compute RowMean for all rows
-  df.numeric <- select(df, N_, GroupAP, Ratio, AP0, AP1, Diff, DP, TP)
-  df$RowMean <- getRowMeans(df.numeric)$RowMean
+  # # compute RowMean for all rows
+  # df.numeric <- select(df, N_, GroupAP, Ratio, AP0, AP1, Diff, DP, TP)
+  # df$RowMean <- getRowMeans(df.numeric)$RowMean
+  # add group ids 
+  df$Grp <- rep(NA, nrow(df))
+  df[is.na(df$Grp) & df$SD == "N" & df$OI == "J", ]$Grp <- 1
+  df[is.na(df$Grp) & df$SI == "T" & df$OI == "P", ]$Grp <- 2
+  df[is.na(df$Grp) & df$SI == "F" & df$OI == "P", ]$Grp <- 3
+  df[is.na(df$Grp) & df$SD == "S" & df$OI == "J", ]$Grp <- 4
+  # df[is.na(df$Grp) & df$SI == "X" & (df$OI == "P" | df$OI == "J"), ]$Grp <- 5
+  # df[is.na(df$Grp) & df$OI == "X", ]$Grp <- 6
+  df[is.na(df$Grp), ]$Grp <- 5
+  df$Grp <- as.factor(df$Grp)
   return(df)
 }
 
@@ -353,7 +361,8 @@ getPath <- function(mbs, choices, undef = -1, chosen = c("","","",""), withTotal
                         Diff = sum(df12$Diff),
                         DP = sum(df12$DP),
                         TP = sum(df12$TP),
-                        RowMean = sum(df12$RowMean),
+                        Grp = "",
+                        # RowMean = sum(df12$RowMean),
                         Choice = "",
                         ChDiff = sum(df12$ChDiff),
                         ChDP = sum(df12$ChDP),
@@ -401,6 +410,7 @@ getAllPaths <- function(mbs) {
   }
   out <- na.omit(out)
   rownames(out) <- sprintf("%s%s%s%s", out[,"Ch1"], out[,"Ch2"], out[,"Ch3"], out[,"Ch4"])
+  Mask <- rownames(out)
   TGroupAP <- c()
   TChDiff <- c()
   TChDP <- c()
@@ -416,14 +426,22 @@ getAllPaths <- function(mbs) {
   out$Ch2 <- factor(out$Ch2)
   out$Ch3 <- factor(out$Ch3)
   out$Ch4 <- factor(out$Ch4)
-  # compute RowMean for all rows
-  tmp <- out
-  tmp$Ch1 <- as.numeric(tmp$Ch1)
-  tmp$Ch2 <- as.numeric(tmp$Ch2)
-  tmp$Ch3 <- as.numeric(tmp$Ch3)
-  tmp$Ch4 <- as.numeric(tmp$Ch4)
-  RowMean <- getRowMeans(tmp)
-  return(cbind(out, TGroupAP, TChDiff, TChDP, TChTP, RowMean))
+  # # compute RowMean for all rows
+  # tmp <- out
+  # tmp$Ch1 <- as.numeric(tmp$Ch1)
+  # tmp$Ch2 <- as.numeric(tmp$Ch2)
+  # tmp$Ch3 <- as.numeric(tmp$Ch3)
+  # tmp$Ch4 <- as.numeric(tmp$Ch4)
+  # RowMean <- getRowMeans(tmp)
+  # out <- cbind(Mask, out, TGroupAP, TChDiff, TChDP, TChTP, RowMean)
+  out <- cbind(Mask, out, TGroupAP, TChDiff, TChDP, TChTP)
+  out$Grp <- as.integer(rep(NA, nrow(out)))
+  out[grepl("N", out$Mask, fixed=TRUE) & grepl("J", out$Mask, fixed=TRUE), ]$Grp <- 1
+  out[grepl("T", out$Mask, fixed=TRUE) & grepl("P", out$Mask, fixed=TRUE), ]$Grp <- 2
+  out[grepl("F", out$Mask, fixed=TRUE) & grepl("P", out$Mask, fixed=TRUE), ]$Grp <- 3
+  out[grepl("S", out$Mask, fixed=TRUE) & grepl("J", out$Mask, fixed=TRUE), ]$Grp <- 4
+  out$Grp <- as.factor(out$Grp)
+  return(out)
 }
 
 # normalise the columns of a data frame
@@ -448,10 +466,14 @@ normColumns <- function(df, cinds) {
 sortedPlot <- function(mb, cname, lsize = NULL) {
   mb <- mb[order(eval(parse(text = paste("mb$", cname, sep = "")))), ]
   rank <- 1:nrow(mb)
-  ggplot(mb, aes(x = rank, y = eval(parse(text = cname)))) +
+  plt <- ggplot(mb, aes(x = rank, y = eval(parse(text = cname)), color = Grp)) +
     geom_point() +
     scale_x_continuous(breaks = rank, labels = rownames(mb)) +
     theme(axis.text.x = element_text(face="bold", angle=90, size = lsize)) +
     ylab(cname)
+  maxGrp <- max(as.integer(mb$Grp))
+  if (maxGrp == 5) plt <- plt + scale_colour_manual(values = c("red", "green3", "blue", "gold2", "snow3"))
+  else plt <- plt + scale_colour_manual(values = c("red", "green3", "blue", "gold2", "cyan", "violet", "snow3")) 
+  plt
 }
 

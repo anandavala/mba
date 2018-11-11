@@ -13,7 +13,7 @@ MB <- loadMB()
 # MB types sorted by prevalence
 (MB.sorted <- MB[order(MB$AP), ])
 
-# Plot of the sorted spectrum of normalised prevalence values for all Myers-Briggs types.
+# Plot of the sorted spectrum of normalised prevalence values for all Myers-Briggs types. AP = %ofPop.
 sortedPlot(MB, "APN")
 
 # Cluster Diagram
@@ -26,17 +26,17 @@ ggdendrogram(hc)
 MBS <- getScenarios(MB)
 getPath(MBS, c("E","F","J","N"))
 
-# Plot of the sorted spectrum of normalised group prevalence values for all adaptation scenarios.
-MBS.norm <- normColumns(MBS, 7:14)
+# Plot of the sorted spectrum of normalised group prevalence values for all adaptation scenarios. GroupAP = %ofPop
+MBS.norm <- normColumns(MBS, 7:13)
 sortedPlot(MBS.norm, "GroupAP")
 
-# Plot of the sorted spectrum of normalised choice difference values for all adaptation scenarios.
+# Plot of the sorted spectrum of normalised choice difference values for all adaptation scenarios. Diff = yin% - yang%
 sortedPlot(MBS.norm, "Diff")
 
-# Plot of the sorted spectrum of normalised demographic pressure values for all adaptation scenarios.
+# Plot of the sorted spectrum of normalised demographic pressure values for all adaptation scenarios. DP = GroupAP * Diff 
 sortedPlot(MBS.norm, "DP")
 
-# Plot of the sorted spectrum of normalised TP values for all adaptation scenarios.
+# Plot of the sorted spectrum of normalised TP values for all adaptation scenarios. TP = Diff / GroupAP
 sortedPlot(MBS.norm, "TP")
 
 # What are the most discouraged and encouraged adaptations, with the highest absolute choice difference?
@@ -51,9 +51,9 @@ head(MBS[order(-abs(MBS$TP)), ])
 # What are the adaptations with the least targeted pressure?
 head(MBS[order(abs(MBS$TP)), ])
 
-# Plot of the sorted spectrum of normalised total group prevalence values for all 4 step evolutionary paths.
+# Plot of the sorted spectrum of normalise total group prevalence values for all 4 step evolutionary paths.
 allPaths <- getAllPaths(MBS)
-allPaths.norm <- normColumns(allPaths, 5:9)
+allPaths.norm <- normColumns(allPaths, 6:9)
 sortedPlot(allPaths.norm, "TGroupAP", lsize = 4)
 
 # Plot of the sorted spectrum of normalised total choice difference values for all 4 step evolutionary paths.
