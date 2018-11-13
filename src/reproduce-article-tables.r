@@ -6,7 +6,7 @@ rm(list=ls())
 setwd("~/Documents/Projects/16PersonalityTypes/all/mba/") # edit to suit your environment
 source("./src/mb-utils.r")
 
-#### Cluster Analysis ####
+#### Analysis ####
 
 MB <- loadMB()
 

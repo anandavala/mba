@@ -22,6 +22,11 @@ getRowMeans <- function(mb, rnames = rownames(mb)) {
 }
 
 
+# PR from https://www.careerplanner.com/MB2/TypeInPopulation.cfm
+# LP, UP from https://www.myersbriggs.org/my-mbti-personality-type/my-mbti-results/how-frequent-is-my-type.htm?bhjs=0
+# SBT, SBM, SBF from https://www.statisticbrain.com/myers-briggs-statistics/
+# PMT, PMM, PMF from https://personalitymax.com/personality-types/population-gender/ (Note that these are estimates and are not necessarily correct.)
+
 #### load MB data ###
 loadMB <- function() {
   out <- read.csv(file = "./data/myers-briggs-dataset-01.csv", head = TRUE, sep = ",", stringsAsFactors = FALSE)
@@ -34,14 +39,22 @@ loadMB <- function() {
   out$UP <- as.double(out$UP)
   out$PR <- as.double(out$PR)
   out$Pair <- as.integer(out$Pair)
+  out$SBT <- as.double(out$SBT - 0.26 / 16)
+  out$SBM <- as.double(out$SBM)
+  out$SBF <- as.double(out$SBF - 2.6 / 16)
+  out$PMT <- as.double(out$PMT) # treat with caution - only claims to be an estimate
+  out$PMM <- as.double(out$PMM) # treat with caution - only claims to be an estimate
+  out$PMF <- as.double(out$PMF) # treat with caution - only claims to be an estimate
   # Assemble results
   out <- out %>%
     mutate(LUP = (LP + UP) / 2 + 1/16) %>%
     mutate(PR = PR - 0.3 / 16) %>%
-    mutate(AP = (LUP + PR) / 2) %>%
-    mutate(APN = (AP - min(AP)) / (max(AP - min(AP)))) %>%
+    mutate(AP = (LUP + PR + SBT) / 3) %>% # don't use PMT, its only an estimate
+    mutate(APN = (AP - min(AP)) / (max(AP) - min(AP))) %>%
     mutate(Num = rownames(out)) %>%
-    select(Num, 1:7, AP, APN)
+    mutate(APM = (SBM + PMM) / 2) %>%
+    mutate(APF = (SBF + PMF) / 2) %>%
+    select(Num, 1:7, AP, APN, SBM, PMM, APM, SBF, PMF, APF)
   # # compute RowMean for all rows
   # if (paramsAsFactors) {
   #   out.numeric <- select(loadMB(paramsAsFactors = FALSE), OD, SD, SI, OI, APN)
