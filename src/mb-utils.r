@@ -28,6 +28,46 @@ getRowMeans <- function(mb, rnames = rownames(mb)) {
 # PMT, PMM, PMF from https://personalitymax.com/personality-types/population-gender/ (Note that these are estimates and are not necessarily correct.)
 
 #### load MB data ###
+loadMBForArticle <- function() {
+  out <- read.csv(file = "./data/myers-briggs-dataset-01.csv", head = TRUE, sep = ",", stringsAsFactors = FALSE)
+  out$OD <- as.factor(out$OD)
+  out$SD <- as.factor(out$SD)
+  out$SI <- factor(out$SI, labels = c("F", "T"))
+  out$OI <- as.factor(out$OI)
+  # compute average percentages
+  out$LP <- as.double(out$LP)
+  out$UP <- as.double(out$UP)
+  out$PR <- as.double(out$PR)
+  out$Pair <- as.integer(out$Pair)
+  # Assemble results
+  out <- out %>%
+    mutate(LUP = (LP + UP) / 2 + 1/16) %>%
+    mutate(PR = PR - 0.3 / 16) %>%
+    mutate(AP = (LUP + PR) / 2) %>% # don't use PMT, its only an estimate
+    mutate(APN = (AP - min(AP)) / (max(AP) - min(AP))) %>%
+    mutate(Num = rownames(out)) %>%
+    select(Num, 1:7, AP, APN)
+  # # compute RowMean for all rows
+  # if (paramsAsFactors) {
+  #   out.numeric <- select(loadMB(paramsAsFactors = FALSE), OD, SD, SI, OI, APN)
+  # }
+  # else {
+  #   out.numeric <- select(out, OD, SD, SI, OI, APN)
+  # }
+  # rowMeans <- getRowMeans(out.numeric, out$Type)
+  # out <- mutate(out, RowMean = rowMeans$RowMean)
+  rownames(out) <- out$Type
+  # Add group id column
+  out$Grp <- rep(NA, nrow(out))
+  out[out$SD == "N" & out$OI == "J", ]$Grp <- 1
+  out[out$SI == "T" & out$OI == "P", ]$Grp <- 2
+  out[out$SI == "F" & out$OI == "P", ]$Grp <- 3
+  out[out$SD == "S" & out$OI == "J", ]$Grp <- 4
+  out$Grp <- as.factor(out$Grp)
+  return(out)
+}
+
+
 loadMB <- function() {
   out <- read.csv(file = "./data/myers-briggs-dataset-01.csv", head = TRUE, sep = ",", stringsAsFactors = FALSE)
   out$OD <- as.factor(out$OD)
@@ -293,12 +333,6 @@ getParam <- function(s) {
 # each path is defined by a set of four choices, e.g. c("N","J","I","T")
 # traverse this sequence of choices and print details of each step
 getPath <- function(mbs, choices, undef = -1, chosen = c("","","",""), withTotals = TRUE) {
-  # print("mbs")
-  # print(mbs)
-  # print("choices")
-  # print(choices)
-  # print("undef")
-  # print(undef)
   if (class(choices) == "data.frame") choices <- c(sprintf("%s", choices[1,1]), 
                                                    sprintf("%s", choices[1,2]), 
                                                    sprintf("%s", choices[1,3]), 

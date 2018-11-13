@@ -8,7 +8,18 @@ source("./src/mb-utils.r")
 
 #### Analysis ####
 
-MB <- loadMB()
+MB <- loadMBForArticle() # loads only the data sources used at the time of the article
+
+# uncomment to use latest data - averaged over all reliable sources.
+# MB <- loadMB()
+
+# # uncommnent to use only male data (from Statistic Brain)
+# MB$AP <- MB$SBM
+# MB$APN <- (MB$AP - min(MB$AP)) / (max(MB$AP) - min(MB$AP))
+
+# # uncommnent to use only female data (from Statistic Brain)
+# MB$AP <- MB$SBF
+# MB$APN <- (MB$AP - min(MB$AP)) / (max(MB$AP) - min(MB$AP))
 
 # MB types sorted by prevalence
 (MB.sorted <- MB[order(MB$AP), ])
