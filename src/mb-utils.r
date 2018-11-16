@@ -382,7 +382,7 @@ getPath <- function(mbs, choices, undef = -1, chosen = c("","","",""), withTotal
         df2 <- getPath(mbs[mbs$OD == "I", ], choices, undef - 1, chosen, FALSE, origmbs = origmbs)
       }
       else {
-        df2 <- getPath(mbs[mbs$OD == "I", ], choices, undef - 1, chosen, FALSE, origmbs = origmbs)
+        df2 <- getPath(mbs[mbs$OD == "E", ], choices, undef - 1, chosen, FALSE, origmbs = origmbs)
       }
     }
     else if (c == 2){
