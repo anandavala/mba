@@ -25,7 +25,7 @@ sum(g___P$AP)
 (g___J <- filter(MB, OI == "J"))
 sum(g___J$AP)
 
-gDist <- daisy(MB[,c("OD","SD","SI","OI","APN")], metric = "gower")
+gDist <- daisy(MB[,c("OD","SD","SI","OI","AP")], metric = "gower")
 hc <- hclust(gDist)
 ggdendrogram(hc)
 heatmap(as.matrix(gDist), Rowv=as.dendrogram(hc), Colv="Rowv", symm = TRUE)

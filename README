@@ -1,9 +1,7 @@
 
-This repo contains data and R code.
+This repo contains data and R code related to the article: What can data science reveal about the structure of society?
+URL: https://medium.com/@Anandavala/what-can-data-science-reveal-about-the-structure-of-society-b26ff16f9ca1
 
 Abstract: An analysis of the prevalence of Myers-Briggs personality types in society reveals a hierarchical structure of groups within groups, each with characteristic combinations of personality attributes. The data is also analysed to give insight into adaptation scenarios and evolutionary paths.
 
 This type of analysis can reveal the details of the forces of encouragement and discouragement through which the selection process determines the distribution of types that we observe. If data from different populations is analysed, this method can give insights into the fine-structure of different societies and enable detailed cross-comparisons.
-
-See the article: What can data science reveal about the structure of society?
-URL: https://medium.com/@Anandavala/what-can-data-science-reveal-about-the-structure-of-society-b26ff16f9ca1

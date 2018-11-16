@@ -7,10 +7,10 @@ source("./src/mb-utils.r")
 
 #### Do Analysis ####
 
-MB <- loadMB(paramsAsFactors = FALSE)
+MB <- loadMB()
 
 #### Correlation analysis of MB ####
-MB.numeric <- select(MB, OD, SD, SI, OI, APN)
+MB.numeric <- normColumns(select(MB, AP, APM, APF, APGD), c("AP", "APM", "APF", "APGD"))
 
 dat <- as.matrix(MB.numeric)
 # edit the following line to try different methods

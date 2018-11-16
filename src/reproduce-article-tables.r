@@ -10,22 +10,11 @@ source("./src/mb-utils.r")
 
 MB <- loadMBForArticle() # loads only the data sources used at the time of the article
 
-# uncomment to use latest data - averaged over all reliable sources.
-# MB <- loadMB()
-
-# # uncommnent to use only male data (from Statistic Brain)
-# MB$AP <- MB$SBM
-# MB$APN <- (MB$AP - min(MB$AP)) / (max(MB$AP) - min(MB$AP))
-
-# # uncommnent to use only female data (from Statistic Brain)
-# MB$AP <- MB$SBF
-# MB$APN <- (MB$AP - min(MB$AP)) / (max(MB$AP) - min(MB$AP))
-
 # MB types sorted by prevalence
 (MB.sorted <- MB[order(MB$AP), ])
 
 # Plot of the sorted spectrum of normalised prevalence values for all Myers-Briggs types. AP = %ofPop.
-sortedPlot(MB, "APN")
+sortedPlot(MB, "APN", ptsize = 3, datatype = "Myers-Briggs Types")
 
 # Cluster Diagram
 gDist <- daisy(MB[,c("OD","SD","SI","OI","APN")], metric = "gower")
@@ -39,16 +28,16 @@ getPath(MBS, c("E","F","J","N"))
 
 # Plot of the sorted spectrum of normalised group prevalence values for all adaptation scenarios. GroupAP = %ofPop
 MBS.norm <- normColumns(MBS, 7:13)
-sortedPlot(MBS.norm, "GroupAP")
+sortedPlot(MBS.norm, "GroupAP", datatype = "Adaptation Scenarios")
 
 # Plot of the sorted spectrum of normalised choice difference values for all adaptation scenarios. Diff = yin% - yang%
-sortedPlot(MBS.norm, "Diff")
+sortedPlot(MBS.norm, "Diff", datatype = "Adaptation Scenarios")
 
 # Plot of the sorted spectrum of normalised demographic pressure values for all adaptation scenarios. DP = GroupAP * Diff 
-sortedPlot(MBS.norm, "DP")
+sortedPlot(MBS.norm, "DP", datatype = "Adaptation Scenarios")
 
 # Plot of the sorted spectrum of normalised TP values for all adaptation scenarios. TP = Diff / GroupAP
-sortedPlot(MBS.norm, "TP")
+sortedPlot(MBS.norm, "TP", datatype = "Adaptation Scenarios")
 
 # What are the most discouraged and encouraged adaptations, with the highest absolute choice difference?
 head(MBS[order(-abs(MBS$Diff)), ])
@@ -65,16 +54,16 @@ head(MBS[order(abs(MBS$TP)), ])
 # Plot of the sorted spectrum of normalise total group prevalence values for all 4 step evolutionary paths.
 allPaths <- getAllPaths(MBS)
 allPaths.norm <- normColumns(allPaths, 6:9)
-sortedPlot(allPaths.norm, "TGroupAP", lsize = 4)
+sortedPlot(allPaths.norm, "TGroupAP", lblsize = 4, datatype = "Evolutionary Paths")
 
 # Plot of the sorted spectrum of normalised total choice difference values for all 4 step evolutionary paths.
-sortedPlot(allPaths.norm, "TChDiff", lsize = 4)
+sortedPlot(allPaths.norm, "TChDiff", lblsize = 4, datatype = "Evolutionary Paths")
 
 # Plot of the sorted spectrum of normalised demographic pressure values for all 4 step evolutionary paths.
-sortedPlot(allPaths.norm, "TChDP", lsize = 4)
+sortedPlot(allPaths.norm, "TChDP", lblsize = 4, datatype = "Evolutionary Paths")
 
 # Plot of the sorted spectrum of normalised total targeted pressure values for all 4 step evolutionary paths.
-sortedPlot(allPaths.norm, "TChTP", lsize = 4)
+sortedPlot(allPaths.norm, "TChTP", lblsize = 4, datatype = "Evolutionary Paths")
 
 # The most discouraged paths (in terms of choice difference)
 head(allPaths[order(allPaths$TChDiff), ], n = 16)
