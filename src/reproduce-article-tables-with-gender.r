@@ -42,7 +42,10 @@ MBSGD <- MBS
 MBSGD[7:13] <- MBSF[7:13] - MBSM[7:13]
 
 plotPath(MBS, MBSF, MBSM, MBSGD, c("E","F","J","N"), cname = "ChDiff")
-
+getPath(MBS, c("E","F","J","N"))
+getPath(MBSF, c("E","F","J","N"))
+getPath(MBSM, c("E","F","J","N"))
+getPath(MBSGD, c("E","F","J","N"))
 
 # Plot of the sorted spectrum of normalised group prevalence values for all adaptation scenarios. GroupAP = %ofPop
 MBSGender <- getGendered(MBS, MBSF, MBSM, MBSGD, "GroupAP")
