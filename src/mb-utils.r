@@ -116,7 +116,7 @@ loadMB <- function() {
   out$SBF <- as.double(out$SBF - 2.6 / 16)
   # Assemble results
   out <- out %>%
-    mutate(LUP = (LP + UP) / 2 + 1/16) %>%
+    mutate(LUP = (LP + UP) / 2 + 1 / 16) %>%
     mutate(PR = PR - 0.3 / 16) %>%
     mutate(AP = (LUP + PR + SBT) / 3) %>% # average over all totals
     mutate(APN = (AP - min(AP)) / (max(AP) - min(AP))) %>%
@@ -286,12 +286,13 @@ getScenarios <- function(mb, masks = getMasks(), cname = "AP") {
     if (length(pp) > 0) {
       for (i in 1:length(pp)) {
         tmp <- split(mb, mb[, 3 + pp[i]])
-        mb <- tmp[[ifelse(vec[pp[i]] == symbolSet[2, pp[i]], 1, 2)]]
+        # mb <- tmp[[ifelse(vec[pp[i]] == symbolSet[2, pp[i]], 1, 2)]]
+        mb <- eval(parse(text = paste("tmp$", vec[pp[i]], sep = "")))
       }
     }
     tmp <- split(mb, mb[, 3 + xp])
-    mb0 <- tmp[[1]]
-    mb1 <- tmp[[2]]
+    mb0 <- eval(parse(text = paste("tmp$", as.character(symbolSet[1, xp]), sep = "")))
+    mb1 <- eval(parse(text = paste("tmp$", as.character(symbolSet[2, xp]), sep = "")))
     p0 <- sum(eval(parse(text = paste("mb0$", cname, sep = ""))))
     p1 <- sum(eval(parse(text = paste("mb1$", cname, sep = ""))))
     ratio <-  p0 / p1
@@ -316,8 +317,8 @@ getScenarios <- function(mb, masks = getMasks(), cname = "AP") {
                    AP0 = ap0s,
                    AP1 = ap1s,
                    Diff = diffs,
-                   DP = groupAPs * diffs,
-                   TP = diffs / groupAPs )
+                   DP = groupAPs / 100 * diffs,
+                   TP = diffs / groupAPs * 100 )
   df$Mask <- as.character(df$Mask)
   df$N_ <- as.integer(df$N_)
   # # compute RowMean for all rows
