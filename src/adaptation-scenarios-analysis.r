@@ -28,7 +28,7 @@ MBS <- getScenarios(MB)
 # MBSg <- select(MBS, DP, RP, TP)
 # MBSg <- select(MBS, DP, TP)
 # MBSg <- select(MBS, DP, TP, N_)
-cols <- c("DP", "TP", "N_")
+cols <- c("N_", "Ratio", "Diff", "DP", "TP", "Grp")
 
 gDist <- daisy(MBS[, cols], metric = "gower", stand = TRUE)
 hc <- hclust(gDist)
@@ -36,7 +36,7 @@ ggdendrogram(hc)
 heatmap(as.matrix(gDist), Rowv=as.dendrogram(hc), Colv="Rowv", symm = TRUE)
 
 plotSilWidth(gDist)
-plotClusters(gDist,MBSg[, cols], 9)
+plotClusters(gDist,MBS[, cols], 13)
 
 MBSg <- MBS[order(MBS$Diff),]
 sum(MBSg$GroupAP)

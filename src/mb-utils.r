@@ -22,10 +22,6 @@ getRowMeans <- function(mb, rnames = rownames(mb)) {
 }
 
 
-# PR from https://www.careerplanner.com/MB2/TypeInPopulation.cfm
-# LP, UP from https://www.myersbriggs.org/my-mbti-personality-type/my-mbti-results/how-frequent-is-my-type.htm?bhjs=0
-# SBT, SBM, SBF from https://www.statisticbrain.com/myers-briggs-statistics/
-# PMT, PMM, PMF from https://personalitymax.com/personality-types/population-gender/ (Note that these are estimates and are not necessarily correct.)
 
 #### load MB data ###
 loadMBForArticle <- function() {
@@ -34,16 +30,14 @@ loadMBForArticle <- function() {
   out$SD <- as.factor(out$SD)
   out$SI <- factor(out$SI, labels = c("F", "T"))
   out$OI <- as.factor(out$OI)
-  # compute average percentages
-  out$LP <- as.double(out$LP)
-  out$UP <- as.double(out$UP)
-  out$PR <- as.double(out$PR)
+  out$PPTL <- as.double(out$PPTL)
+  out$PPTU <- as.double(out$PPTU)
+  out$PPT <- as.double(out$PPT - 0.26 / 16)
   out$Pair <- as.integer(out$Pair)
   # Assemble results
   out <- out %>%
-    mutate(LUP = (LP + UP) / 2 + 1/16) %>%
-    mutate(PR = PR - 0.3 / 16) %>%
-    mutate(AP = (LUP + PR) / 2) %>% # don't use PMT, its only an estimate
+    mutate(LUP = (PPTL + PPTU) / 2 + 1 / 16) %>%
+    mutate(AP = (LUP + PPT) / 2) %>% # don't use PMT, its only an estimate
     mutate(APN = (AP - min(AP)) / (max(AP) - min(AP))) %>%
     mutate(Num = rownames(out)) %>%
     select(Num, 1:7, AP, APN)
@@ -67,8 +61,7 @@ loadMBForArticle <- function() {
   return(out)
 }
 
-
-loadMBSB <- function() {
+loadMBGender <- function() {
   out <- read.csv(file = "./data/myers-briggs-dataset-01.csv", head = TRUE, sep = ",", stringsAsFactors = FALSE)
   out$OD <- as.factor(out$OD)
   out$SD <- as.factor(out$SD)
@@ -76,17 +69,59 @@ loadMBSB <- function() {
   out$OI <- as.factor(out$OI)
   # compute average percentages
   out$Pair <- as.integer(out$Pair)
-  out$SBT <- as.double(out$SBT - 0.26 / 16)
-  out$SBM <- as.double(out$SBM)
-  out$SBF <- as.double(out$SBF - 2.6 / 16)
+  out$PPT <- as.double(out$PPT - 0.26 / 16)
+  out$PPM <- as.double(out$PPM)
+  out$PPF <- as.double(out$PPF - 2.6 / 16)
   # Assemble results
   out <- out %>%
-    mutate(AP = SBT) %>% # only Statistic Brain totals
+    mutate(AP = PPT) %>% # only Statistic Brain totals
     mutate(APN = (AP - min(AP)) / (max(AP) - min(AP))) %>%
     mutate(Num = rownames(out)) %>%
     # select which gender sources to average
-    mutate(APM = SBM) %>% # only Statistic Brain male data
-    mutate(APF = SBF) %>% # only Statistic Brain female data
+    mutate(APM = PPM) %>% # only Statistic Brain male data
+    mutate(APF = PPF) %>% # only Statistic Brain female data
+    mutate(APGD = APF - APM) %>% # the gender difference (using yin-centric convention)
+    select(Num, 1:7, AP, APN, APM, APF, APGD)
+  rownames(out) <- out$Type
+  # Add group id column
+  out$Grp <- rep(NA, nrow(out))
+  out[out$SD == "N" & out$OI == "J", ]$Grp <- 1
+  out[out$SI == "T" & out$OI == "P", ]$Grp <- 2
+  out[out$SI == "F" & out$OI == "P", ]$Grp <- 3
+  out[out$SD == "S" & out$OI == "J", ]$Grp <- 4
+  out$Grp <- as.factor(out$Grp)
+  return(out)
+}
+
+loadMBBounds <- function() {
+  out <- read.csv(file = "./data/myers-briggs-dataset-01.csv", head = TRUE, sep = ",", stringsAsFactors = FALSE)
+  out$OD <- as.factor(out$OD)
+  out$SD <- as.factor(out$SD)
+  out$SI <- factor(out$SI, labels = c("F", "T"))
+  out$OI <- as.factor(out$OI)
+  out$Pair <- as.integer(out$Pair)
+  # total population
+  out$PPT <- as.double(out$PPT - 0.26 / 16)
+  out$PPTL <- as.double(out$PPTL)
+  out$PPTU <- as.double(out$PPTU)
+  # females
+  out$PPF <- as.double(out$PPF - 2.6 / 16)
+  out$LPF <- as.double(out$LPF)
+  out$UPF <- as.double(out$UPF)
+  # males
+  out$PPM <- as.double(out$PPM)
+  out$LPM <- as.double(out$LPM)
+  out$UPM <- as.double(out$UPM)
+  
+  # Assemble results
+  out <- out %>%
+    mutate(LUP = (PPTL + PPTU) / 2 + 1/16) %>%
+    mutate(AP = PPT) %>% # only Statistic Brain totals
+    mutate(APN = (AP - min(AP)) / (max(AP) - min(AP))) %>%
+    mutate(Num = rownames(out)) %>%
+    # select which gender sources to average
+    mutate(APM = PPM) %>% # only Statistic Brain male data
+    mutate(APF = PPF) %>% # only Statistic Brain female data
     mutate(APGD = APF - APM) %>% # the gender difference (using yin-centric convention)
     select(Num, 1:7, AP, APN, APM, APF, APGD)
   rownames(out) <- out$Type
@@ -107,22 +142,21 @@ loadMB <- function() {
   out$SI <- factor(out$SI, labels = c("F", "T"))
   out$OI <- as.factor(out$OI)
   # compute average percentages
-  out$LP <- as.double(out$LP)
-  out$UP <- as.double(out$UP)
-  out$PR <- as.double(out$PR)
+  out$PPTL <- as.double(out$PPTL)
+  out$PPTU <- as.double(out$PPTU)
+  out$PPT <- as.double(out$PPT - 0.26 / 16)
   out$Pair <- as.integer(out$Pair)
-  out$SBT <- as.double(out$SBT - 0.26 / 16)
-  out$SBM <- as.double(out$SBM)
-  out$SBF <- as.double(out$SBF - 2.6 / 16)
+  out$PPT <- as.double(out$PPT - 0.26 / 16)
+  out$PPM <- as.double(out$PPM)
+  out$PPF <- as.double(out$PPF - 2.6 / 16)
   # Assemble results
   out <- out %>%
-    mutate(LUP = (LP + UP) / 2 + 1 / 16) %>%
-    mutate(PR = PR - 0.3 / 16) %>%
-    mutate(AP = (LUP + PR + SBT) / 3) %>% # average over all totals
+    mutate(LUP = (PPTL + PPTU) / 2 + 1 / 16) %>%
+    mutate(AP = (LUP + PPT) / 2) %>% # average over all totals
     mutate(APN = (AP - min(AP)) / (max(AP) - min(AP))) %>%
     mutate(Num = rownames(out)) %>%
-    mutate(APM = SBM) %>% # only Statistic Brain male data for now
-    mutate(APF = SBF) %>% # only Statistic Brain female data for now
+    mutate(APM = PPM) %>% # only Statistic Brain male data for now
+    mutate(APF = PPF) %>% # only Statistic Brain female data for now
     mutate(APGD = APF - APM) %>% # the gender difference
     select(Num, 1:7, AP, APN, APM, APF, APGD)
   rownames(out) <- out$Type

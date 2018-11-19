@@ -9,7 +9,7 @@ source("./src/mb-utils.r")
 
 #### Analysis ####
 
-MB <- loadMBSB() # Statistic Brain data only
+MB <- loadMBGender()
 
 # MB types sorted by prevalence
 # rownames(MB[order(MB$AP), ])
@@ -50,29 +50,29 @@ getPath(MBSGD, c("E","F","J","N"))
 # Plot of the sorted spectrum of normalised group prevalence values for all adaptation scenarios. GroupAP = %ofPop
 MBSGender <- getGendered(MBS, MBSF, MBSM, MBSGD, "GroupAP")
 sortedGenderPlot(MBSGender, "AP", datatype = "Adaptation Scenarios", ylabel = "% of pop.")
-sortedGenderPlot(MBSGender, "APF", datatype = "Adaptation Scenarios", ylabel = "% of pop.")
-sortedGenderPlot(MBSGender, "APM", datatype = "Adaptation Scenarios", ylabel = "% of pop.")
+# sortedGenderPlot(MBSGender, "APF", datatype = "Adaptation Scenarios", ylabel = "% of pop.")
+# sortedGenderPlot(MBSGender, "APM", datatype = "Adaptation Scenarios", ylabel = "% of pop.")
 sortedGenderPlot(MBSGender, "APGD", datatype = "Adaptation Scenarios", ylabel = "% of pop.")
 
 # Plot of the sorted spectrum of normalised choice difference values for all adaptation scenarios. Diff = yin% - yang%
 MBSGender <- getGendered(MBS, MBSF, MBSM, MBSGD, "Diff")
 sortedGenderPlot(MBSGender, "AP", datatype = "Adaptation Scenarios", ylabel = "Difference")
-sortedGenderPlot(MBSGender, "APF", datatype = "Adaptation Scenarios", ylabel = "Difference")
-sortedGenderPlot(MBSGender, "APM", datatype = "Adaptation Scenarios", ylabel = "Difference")
+# sortedGenderPlot(MBSGender, "APF", datatype = "Adaptation Scenarios", ylabel = "Difference")
+# sortedGenderPlot(MBSGender, "APM", datatype = "Adaptation Scenarios", ylabel = "Difference")
 sortedGenderPlot(MBSGender, "APGD", datatype = "Adaptation Scenarios", ylabel = "Difference")
 
 # Plot of the sorted spectrum of normalised demographic pressure values for all adaptation scenarios. DP = GroupAP * Diff 
 MBSGender <- getGendered(MBS, MBSF, MBSM, MBSGD, "DP")
 sortedGenderPlot(MBSGender, "AP", datatype = "Adaptation Scenarios", ylabel = "Demographic Pressure")
-sortedGenderPlot(MBSGender, "APF", datatype = "Adaptation Scenarios", ylabel = "Demographic Pressure")
-sortedGenderPlot(MBSGender, "APM", datatype = "Adaptation Scenarios", ylabel = "Demographic Pressure")
+# sortedGenderPlot(MBSGender, "APF", datatype = "Adaptation Scenarios", ylabel = "Demographic Pressure")
+# sortedGenderPlot(MBSGender, "APM", datatype = "Adaptation Scenarios", ylabel = "Demographic Pressure")
 sortedGenderPlot(MBSGender, "APGD", datatype = "Adaptation Scenarios", ylabel = "Demographic Pressure")
 
 # Plot of the sorted spectrum of normalised TP values for all adaptation scenarios. TP = Diff / GroupAP
 MBSGender <- getGendered(MBS, MBSF, MBSM, MBSGD, "TP")
 sortedGenderPlot(MBSGender, "AP", datatype = "Adaptation Scenarios", ylabel = "Targeted Pressure")
-sortedGenderPlot(MBSGender, "APF", datatype = "Adaptation Scenarios", ylabel = "Targeted Pressure")
-sortedGenderPlot(MBSGender, "APM", datatype = "Adaptation Scenarios", ylabel = "Targeted Pressure")
+# sortedGenderPlot(MBSGender, "APF", datatype = "Adaptation Scenarios", ylabel = "Targeted Pressure")
+# sortedGenderPlot(MBSGender, "APM", datatype = "Adaptation Scenarios", ylabel = "Targeted Pressure")
 sortedGenderPlot(MBSGender, "APGD", datatype = "Adaptation Scenarios", ylabel = "Targeted Pressure")
 
 # What are the most discouraged and encouraged adaptations, with the highest choice difference magnitude?
@@ -98,29 +98,29 @@ allPathsGD[6:9] <- allPathsF[6:9] - allPathsM[6:9]
 
 AllPathsGender <- getGendered(allPaths, allPathsF, allPathsM, allPathsGD, "TGroupAP")
 sortedGenderPlot(AllPathsGender, "AP", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "% of pop.")
-sortedGenderPlot(AllPathsGender, "APF", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "% of pop.")
-sortedGenderPlot(AllPathsGender, "APM", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "% of pop.")
+# sortedGenderPlot(AllPathsGender, "APF", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "% of pop.")
+# sortedGenderPlot(AllPathsGender, "APM", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "% of pop.")
 sortedGenderPlot(AllPathsGender, "APGD", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "% of pop.")
 
 # Plot of the sorted spectrum of normalised total choice difference values for all 4 step evolutionary paths.
 AllPathsGender <- getGendered(allPaths, allPathsF, allPathsM, allPathsGD, "TChDiff")
 sortedGenderPlot(AllPathsGender, "AP", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "Difference")
-sortedGenderPlot(AllPathsGender, "APF", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "Difference")
-sortedGenderPlot(AllPathsGender, "APM", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "Difference")
+# sortedGenderPlot(AllPathsGender, "APF", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "Difference")
+# sortedGenderPlot(AllPathsGender, "APM", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "Difference")
 sortedGenderPlot(AllPathsGender, "APGD", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "Difference")
 
 # Plot of the sorted spectrum of normalised demographic pressure values for all 4 step evolutionary paths.
 AllPathsGender <- getGendered(allPaths, allPathsF, allPathsM, allPathsGD, "TChDP")
 sortedGenderPlot(AllPathsGender, "AP", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "Demographic Pressure")
-sortedGenderPlot(AllPathsGender, "APF", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "Demographic Pressure")
-sortedGenderPlot(AllPathsGender, "APM", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "Demographic Pressure")
+# sortedGenderPlot(AllPathsGender, "APF", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "Demographic Pressure")
+# sortedGenderPlot(AllPathsGender, "APM", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "Demographic Pressure")
 sortedGenderPlot(AllPathsGender, "APGD", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "Demographic Pressure")
 
 # Plot of the sorted spectrum of normalised total targeted pressure values for all 4 step evolutionary paths.
 AllPathsGender <- getGendered(allPaths, allPathsF, allPathsM, allPathsGD, "TChTP")
 sortedGenderPlot(AllPathsGender, "AP", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "Targeted Pressure")
-sortedGenderPlot(AllPathsGender, "APF", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "Targeted Pressure")
-sortedGenderPlot(AllPathsGender, "APM", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "Targeted Pressure")
+# sortedGenderPlot(AllPathsGender, "APF", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "Targeted Pressure")
+# sortedGenderPlot(AllPathsGender, "APM", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "Targeted Pressure")
 sortedGenderPlot(AllPathsGender, "APGD", lblsize = 4, datatype = "Evolutionary Paths", ylabel = "Targeted Pressure")
 
 # The most discouraged paths (in terms of choice difference)
@@ -131,13 +131,13 @@ sortedPlot(rbind(head(allPathsF[order(allPathsF$TChDiff), ]), head(allPathsF[ord
 sortedPlot(rbind(head(allPathsM[order(allPathsM$TChDiff), ]), head(allPathsM[order(abs(allPathsM$TChDiff)), ]), tail(allPathsM[order(allPathsM$TChDiff), ])), "TChDiff", datatype = "Evolutionary Paths", ylabel = "% of pop.", ptsize = 3, suffix = "Males")
 sortedPlot(rbind(head(allPathsGD[order(allPathsGD$TChDiff), ]), head(allPathsGD[order(abs(allPathsGD$TChDiff)), ]), tail(allPathsGD[order(allPathsGD$TChDiff), ])), "TChDiff", datatype = "Evolutionary Paths", ylabel = "% of pop.", ptsize = 3, suffix = "Gender Differences")
 
-# The most discouraged paths (in terms of demographic pressure)
-# The most encouraged paths (in terms of demographic pressure)
-# The least pressure paths (in terms of demographic pressure)
-sortedPlot(rbind(head(allPaths[order(allPaths$TChDP), ]), head(allPaths[order(abs(allPaths$TChDP)), ]), tail(allPaths[order(allPaths$TChDP), ])), "TChDP", datatype = "Evolutionary Paths", ylabel = "Demographic Pressure", ptsize = 3, suffix = "Total Population")
-sortedPlot(rbind(head(allPathsF[order(allPathsF$TChDP), ]), head(allPathsF[order(abs(allPathsF$TChDP)), ]), tail(allPathsF[order(allPathsF$TChDP), ])), "TChDP", datatype = "Evolutionary Paths", ylabel = "Demographic Pressure", ptsize = 3, suffix = "Females")
-sortedPlot(rbind(head(allPathsM[order(allPathsM$TChDP), ]), head(allPathsM[order(abs(allPathsM$TChDP)), ]), tail(allPathsM[order(allPathsM$TChDP), ])), "TChDP", datatype = "Evolutionary Paths", ylabel = "Demographic Pressure", ptsize = 3, suffix = "Males")
-sortedPlot(rbind(head(allPathsGD[order(allPathsGD$TChDP), ]), head(allPathsGD[order(abs(allPathsGD$TChDP)), ]), tail(allPathsGD[order(allPathsGD$TChDP), ])), datatype = "Evolutionary Paths", ylabel = "Demographic Pressure", "TChDP", ptsize = 3, suffix = "Gender Differences")
+# # The most discouraged paths (in terms of demographic pressure)
+# # The most encouraged paths (in terms of demographic pressure)
+# # The least pressure paths (in terms of demographic pressure)
+# sortedPlot(rbind(head(allPaths[order(allPaths$TChDP), ]), head(allPaths[order(abs(allPaths$TChDP)), ]), tail(allPaths[order(allPaths$TChDP), ])), "TChDP", datatype = "Evolutionary Paths", ylabel = "Demographic Pressure", ptsize = 3, suffix = "Total Population")
+# sortedPlot(rbind(head(allPathsF[order(allPathsF$TChDP), ]), head(allPathsF[order(abs(allPathsF$TChDP)), ]), tail(allPathsF[order(allPathsF$TChDP), ])), "TChDP", datatype = "Evolutionary Paths", ylabel = "Demographic Pressure", ptsize = 3, suffix = "Females")
+# sortedPlot(rbind(head(allPathsM[order(allPathsM$TChDP), ]), head(allPathsM[order(abs(allPathsM$TChDP)), ]), tail(allPathsM[order(allPathsM$TChDP), ])), "TChDP", datatype = "Evolutionary Paths", ylabel = "Demographic Pressure", ptsize = 3, suffix = "Males")
+# sortedPlot(rbind(head(allPathsGD[order(allPathsGD$TChDP), ]), head(allPathsGD[order(abs(allPathsGD$TChDP)), ]), tail(allPathsGD[order(allPathsGD$TChDP), ])), datatype = "Evolutionary Paths", ylabel = "Demographic Pressure", "TChDP", ptsize = 3, suffix = "Gender Differences")
 
 # The most discouraged paths (in terms of targeted pressure)
 # The most encouraged paths (in terms of targeted pressure)

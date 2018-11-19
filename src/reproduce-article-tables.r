@@ -82,16 +82,16 @@ head(allPaths[order(abs(allPaths$TChDiff)), ], n = 16)
 head(allPaths[order(abs(allPaths$TChTP)), ], n = 16)
 
 # Discouraged: Logistician ISTJ becomes a Protagonist ENFJ via 12 adaptation steps
-(path <-getPath(MBS, c("N","P","E","F","T","I","S","P","F","E","N","J"), chosen = c("I","S","T","J")))
+getPath(MBS, c("N","P","E","F","T","I","S","P","F","E","N","J"), chosen = c("I","S","T","J"))
 
 # Encouraged: Advocate INFJ becomes an Executive ESTJ via 12 adaptation steps
-(path <-getPath(MBS, c("E","S","T","I","F","N","T","P","S","E","S","J"), chosen = c("I","N","F","J")))
+getPath(MBS, c("E","S","T","I","F","N","T","P","S","E","S","J"), chosen = c("I","N","F","J"))
 
 # The most discouraged: Advocate INFJ remains an Advocate throughout 12 adaptation steps
-(path <-getPath(MBS, c("I","N","F","J","I","N","F","J","I","N","F","J"), chosen = c("I","N","F","J")))
+getPath(MBS, c("I","N","F","J","I","N","F","J","I","N","F","J"), chosen = c("I","N","F","J"))
 
 # The most encouraged: Defender ISFJ remains a Defender throughout 12 adaptation steps
-(path <-getPath(MBS, c("I","S","F","J","I","S","F","J","I","S","F","J"), chosen = c("I","S","F","J")))
+getPath(MBS, c("I","S","F","J","I","S","F","J","I","S","F","J"), chosen = c("I","S","F","J"))
 
 # Cycling within the _N_J group
 getPath(MBS, c("I","N","T","J","E","N","T","J","E","N","F","J"), chosen = c("I","N","F","J"))
